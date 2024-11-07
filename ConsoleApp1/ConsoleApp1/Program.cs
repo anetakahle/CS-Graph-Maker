@@ -209,9 +209,54 @@ standardVsInfoPlusPieChart.SetSize(500, 300);
 var standardVsInfoPlusSeries = standardVsInfoPlusPieChart.Series.Add(breakdownWorksheet2.Cells[startRow2 + 1, 2, startRow2 + standardVsInfoPlus.Count, 2], breakdownWorksheet2.Cells[startRow2 + 1, 1, startRow2 + standardVsInfoPlus.Count, 1]);
 standardVsInfoPlusSeries.Header = "Počet použití";
 
-            
-            
-            
+            //////////////////////////////////////////
+            /// pokus
+
+
+
+            // Přidání mezery mezi grafy
+            currentRow2 += 20;
+
+            // Zpracování dat pro kategorie v plném detailu
+            var detailedCategories = data2.GroupBy(d => d.MappedValue.Trim())
+                .Select(g => new { Kategorie = g.Key, Pocet = g.Count() })
+                .OrderByDescending(g => g.Pocet)
+                .ToList();
+
+            // Přidání dat pro detailní kategorie do worksheetu
+            int detailedStartRow = currentRow2;
+            breakdownWorksheet2.Cells[detailedStartRow, 1].Value = "Detailní Kategorie";
+            breakdownWorksheet2.Cells[detailedStartRow, 2].Value = "Počet";
+
+            for (int i = 0; i < detailedCategories.Count; i++)
+            {
+                breakdownWorksheet2.Cells[detailedStartRow + i + 1, 1].Value = detailedCategories[i].Kategorie;
+                breakdownWorksheet2.Cells[detailedStartRow + i + 1, 2].Value = detailedCategories[i].Pocet;
+            }
+
+            // Vytvoření koláčového grafu pro detailní kategorie
+            var detailedCategoryPieChart = breakdownWorksheet2.Drawings.AddChart("DetailniKategorieGraf", eChartType.Pie);
+            detailedCategoryPieChart.Title.Text = "Rozpady použití karet podle detailních kategorií";
+            detailedCategoryPieChart.SetPosition(detailedStartRow + detailedCategories.Count + 2, 0, 3, 0);
+            detailedCategoryPieChart.SetSize(500, 300);
+
+            var detailedCategorySeries = detailedCategoryPieChart.Series.Add(breakdownWorksheet2.Cells[detailedStartRow + 1, 2, detailedStartRow + detailedCategories.Count, 2], breakdownWorksheet2.Cells[detailedStartRow + 1, 1, detailedStartRow + detailedCategories.Count, 1]);
+            detailedCategorySeries.Header = "Počet použití";
+
+
+
+
+            ///////////////////
+
+
+
+
+
+
+
+
+
+
             // paty list - Rozpady použití karet
             var breakdownWorksheet = package.Workbook.Worksheets.Add("Rozpady kategorií tabů");
 
